@@ -1,0 +1,13 @@
+fastapi[all]
+uvicorn
+sqlalchemy
+psycopg2-binary
+python-dotenv
+apscheduler
+aiofiles
+requests
+py-algorand-sdk
+scikit-learn
+numpy
+pandas
+anthropic
