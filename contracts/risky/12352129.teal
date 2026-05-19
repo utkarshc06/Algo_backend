@@ -1,0 +1,10 @@
+#pragma version 2
+intcblock 0 1
+txn ApplicationID
+intc_0 // 0
+==
+bnz label1
+err
+label1:
+intc_1 // 1
+return

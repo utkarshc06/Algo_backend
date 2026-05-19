@@ -1,0 +1,122 @@
+#pragma version 2
+intcblock 0 2 1 5000000
+bytecblock 0x7265676973746572 0x7472616e73666572 0x43726561746f72 0x
+txn ApplicationID
+intc_0 // 0
+==
+bnz label1
+txn OnCompletion
+intc_1 // 2
+==
+bnz label2
+txn OnCompletion
+intc_2 // 1
+==
+bnz label3
+txna ApplicationArgs 0
+bytec_0 // "register"
+==
+bnz label4
+txna ApplicationArgs 0
+bytec_1 // "transfer"
+==
+bnz label5
+err
+label1:
+txn NumAppArgs
+intc_0 // 0
+==
+bnz label6
+err
+label6:
+bytec_2 // "Creator"
+txn Sender
+app_global_put
+intc_2 // 1
+return
+b label7
+label2:
+txn Sender
+app_global_get
+bz label8
+txn Sender
+app_global_get
+app_global_del
+txn Sender
+app_global_del
+label8:
+intc_2 // 1
+return
+b label7
+label3:
+txn Sender
+app_global_get
+!
+bnz label9
+err
+label9:
+txn Sender
+bytec_3 // ""
+app_global_put
+intc_2 // 1
+return
+b label7
+label4:
+gtxn 0 NumAppArgs
+intc_1 // 2
+==
+bnz label10
+err
+label10:
+gtxna 0 ApplicationArgs 1
+app_global_get
+!
+bnz label11
+err
+label11:
+gtxn 1 Receiver
+bytec_2 // "Creator"
+app_global_get
+==
+gtxn 1 Amount
+intc_3 // 5000000
+>=
+&&
+bnz label12
+err
+label12:
+gtxn 0 Sender
+gtxna 0 ApplicationArgs 1
+app_global_put
+gtxna 0 ApplicationArgs 1
+gtxn 0 Sender
+app_global_put
+intc_2 // 1
+return
+b label7
+label5:
+txn NumAppArgs
+intc_1 // 2
+==
+bnz label13
+err
+label13:
+txn Sender
+app_global_get
+txna ApplicationArgs 1
+app_global_get
+&&
+bnz label14
+err
+label14:
+txn Sender
+app_global_get
+txna ApplicationArgs 1
+app_global_put
+txna ApplicationArgs 1
+txn Sender
+app_global_get
+app_global_put
+intc_2 // 1
+return
+label7:

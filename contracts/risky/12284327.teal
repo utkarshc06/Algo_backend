@@ -1,0 +1,296 @@
+#pragma version 2
+intcblock 0 2 1 3 4
+bytecblock 0x73 0x61 0x77 0x72 0x70 0x43 0x5531 0x5532 0x554c 0x4c54 0x4231 0x5431 0x5432 0x4232 0x5031 0x5032
+txn ApplicationID
+intc_0 // 0
+==
+bnz label1
+txn OnCompletion
+intc_1 // 2
+==
+bnz label2
+txn OnCompletion
+intc_2 // 1
+==
+bnz label3
+txna ApplicationArgs 0
+bytec_0 // "s"
+==
+bnz label4
+txna ApplicationArgs 0
+bytec_1 // "a"
+==
+bnz label5
+txna ApplicationArgs 0
+bytec_2 // "w"
+==
+bnz label6
+txna ApplicationArgs 0
+bytec_3 // "r"
+==
+bnz label7
+txna ApplicationArgs 0
+bytec 4 // "p"
+==
+bnz label8
+err
+label1:
+bytec 5 // "C"
+txn Sender
+app_global_put
+intc_2 // 1
+b label9
+label2:
+intc_0 // 0
+bytec 6 // "U1"
+app_local_get
+intc_0 // 0
+==
+intc_0 // 0
+bytec 7 // "U2"
+app_local_get
+intc_0 // 0
+==
+&&
+intc_0 // 0
+bytec 8 // "UL"
+app_local_get
+intc_0 // 0
+==
+&&
+b label9
+label3:
+txn NumAppArgs
+intc_0 // 0
+==
+bnz label10
+txn NumAppArgs
+intc_3 // 3
+==
+bnz label11
+err
+label10:
+intc_0 // 0
+bytec 9 // "LT"
+txna ApplicationArgs 0
+btoi
+app_local_put
+intc_0 // 0
+bytec 10 // "B1"
+intc_0 // 0
+app_local_put
+intc_0 // 0
+bytec 8 // "UL"
+intc_0 // 0
+app_local_put
+intc_2 // 1
+b label12
+label11:
+intc_0 // 0
+bytec 9 // "LT"
+txna ApplicationArgs 0
+app_local_put
+intc_0 // 0
+bytec 11 // "T1"
+txna ApplicationArgs 1
+app_local_put
+intc_0 // 0
+bytec 12 // "T2"
+txna ApplicationArgs 2
+app_local_put
+intc_0 // 0
+bytec 10 // "B1"
+intc_0 // 0
+app_local_put
+intc_0 // 0
+bytec 13 // "B2"
+intc_0 // 0
+app_local_put
+intc_2 // 1
+label12:
+b label9
+label4:
+intc_2 // 1
+b label9
+label5:
+intc_2 // 1
+b label9
+label6:
+intc_2 // 1
+b label9
+label7:
+global GroupSize
+intc_1 // 2
+==
+txn GroupIndex
+intc_0 // 0
+==
+&&
+txn OnCompletion
+intc_0 // 0
+==
+&&
+txn NumAccounts
+intc_2 // 1
+==
+&&
+load 0
+&&
+gtxn 1 TypeEnum
+intc 4 // 4
+==
+&&
+gtxn 1 Sender
+txna Accounts 0
+==
+&&
+gtxn 1 AssetSender
+global ZeroAddress
+==
+&&
+gtxn 1 AssetCloseTo
+global ZeroAddress
+==
+&&
+bnz label13
+err
+label13:
+gtxn 1 XferAsset
+load 1
+==
+gtxn 1 AssetAmount
+intc_0 // 0
+bytec 6 // "U1"
+app_local_get
+<=
+&&
+bnz label14
+gtxn 1 XferAsset
+load 2
+==
+gtxn 1 AssetAmount
+intc_0 // 0
+bytec 7 // "U2"
+app_local_get
+<=
+&&
+bnz label15
+err
+label14:
+intc_2 // 1
+bytec 6 // "U1"
+intc_0 // 0
+bytec 6 // "U1"
+app_local_get
+gtxn 1 AssetAmount
+-
+app_local_put
+b label16
+label15:
+intc_2 // 1
+bytec 7 // "U2"
+intc_0 // 0
+bytec 7 // "U2"
+app_local_get
+gtxn 1 AssetAmount
+-
+app_local_put
+label16:
+intc_2 // 1
+b label9
+label8:
+global GroupSize
+intc_3 // 3
+==
+txn GroupIndex
+intc_0 // 0
+==
+&&
+txn Sender
+bytec 5 // "C"
+app_global_get
+==
+&&
+txn OnCompletion
+intc_0 // 0
+==
+&&
+txn NumAccounts
+intc_2 // 1
+==
+&&
+load 0
+&&
+gtxn 1 TypeEnum
+intc 4 // 4
+==
+&&
+gtxn 1 Sender
+txna Accounts 0
+==
+&&
+gtxn 1 XferAsset
+load 1
+==
+&&
+gtxn 1 AssetAmount
+intc_2 // 1
+bytec 14 // "P1"
+app_local_get
+<=
+&&
+gtxn 1 AssetSender
+global ZeroAddress
+==
+&&
+gtxn 1 AssetCloseTo
+global ZeroAddress
+==
+&&
+gtxn 2 TypeEnum
+intc 4 // 4
+==
+&&
+gtxn 2 Sender
+txna Accounts 0
+==
+&&
+gtxn 2 XferAsset
+load 2
+==
+&&
+gtxn 2 AssetAmount
+intc_2 // 1
+bytec 15 // "P2"
+app_local_get
+<=
+&&
+gtxn 2 AssetSender
+global ZeroAddress
+==
+&&
+gtxn 2 AssetCloseTo
+global ZeroAddress
+==
+&&
+bnz label17
+err
+label17:
+intc_2 // 1
+bytec 14 // "P1"
+intc_2 // 1
+bytec 14 // "P1"
+app_local_get
+gtxn 1 AssetAmount
+-
+app_local_put
+intc_2 // 1
+bytec 15 // "P2"
+intc_2 // 1
+bytec 15 // "P2"
+app_local_get
+gtxn 2 AssetAmount
+-
+app_local_put
+intc_2 // 1
+label9:

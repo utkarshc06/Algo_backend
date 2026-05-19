@@ -1,0 +1,192 @@
+#pragma version 2
+intcblock 0 5 4 2 1
+bytecblock 0x7365745f61646d696e 0x6d696e74 0x7472616e73666572 0x746f74616c20737570706c79 0x72657365727665 0x63726561746f72 0x61646d696e 0x62616c616e6365
+txn ApplicationID
+intc_0 // 0
+==
+bnz label1
+txn OnCompletion
+intc_1 // 5
+==
+bnz label2
+txn OnCompletion
+intc_2 // 4
+==
+bnz label3
+txn OnCompletion
+intc_3 // 2
+==
+bnz label4
+txn OnCompletion
+intc 4 // 1
+==
+bnz label5
+txna ApplicationArgs 0
+bytec_0 // "set_admin"
+==
+bnz label6
+txna ApplicationArgs 0
+bytec_1 // "mint"
+==
+bnz label7
+txna ApplicationArgs 0
+bytec_2 // "transfer"
+==
+bnz label8
+err
+label1:
+txn NumAppArgs
+intc 4 // 1
+==
+bnz label9
+err
+label9:
+bytec_3 // "total supply"
+txna ApplicationArgs 0
+btoi
+app_global_put
+bytec 4 // "reserve"
+txna ApplicationArgs 0
+btoi
+app_global_put
+bytec 5 // "creator"
+txn Sender
+app_global_put
+intc 4 // 1
+return
+b label10
+label2:
+intc_0 // 0
+bytec 6 // "admin"
+app_local_get
+return
+b label10
+label3:
+txn Sender
+bytec 5 // "creator"
+app_global_get
+==
+bnz label11
+err
+label11:
+intc_0 // 0
+bytec 6 // "admin"
+intc 4 // 1
+app_local_put
+intc_0 // 0
+bytec 7 // "balance"
+intc_0 // 0
+app_local_put
+intc_0 // 0
+bytec 6 // "admin"
+app_local_get
+return
+b label10
+label4:
+intc_0 // 0
+bytec 7 // "balance"
+intc_0 // 0
+app_local_put
+intc 4 // 1
+return
+b label10
+label5:
+intc_0 // 0
+bytec 7 // "balance"
+intc_0 // 0
+app_local_put
+intc 4 // 1
+return
+b label10
+label6:
+intc_0 // 0
+bytec 6 // "admin"
+app_local_get
+txn NumAppArgs
+intc_3 // 2
+==
+&&
+bnz label12
+err
+label12:
+intc 4 // 1
+bytec 6 // "admin"
+txna ApplicationArgs 1
+btoi
+app_local_put
+intc 4 // 1
+return
+b label10
+label7:
+txn NumAppArgs
+intc_3 // 2
+==
+bnz label13
+err
+label13:
+txna ApplicationArgs 1
+btoi
+bytec 4 // "reserve"
+app_global_get
+<=
+bnz label14
+err
+label14:
+bytec 4 // "reserve"
+bytec 4 // "reserve"
+app_global_get
+txna ApplicationArgs 1
+btoi
+-
+app_global_put
+intc 4 // 1
+bytec 7 // "balance"
+intc 4 // 1
+bytec 7 // "balance"
+app_local_get
+txna ApplicationArgs 1
+btoi
++
+app_local_put
+intc_0 // 0
+bytec 6 // "admin"
+app_local_get
+return
+b label10
+label8:
+txn NumAppArgs
+intc_3 // 2
+==
+bnz label15
+err
+label15:
+txna ApplicationArgs 1
+btoi
+intc_0 // 0
+bytec 7 // "balance"
+app_local_get
+<=
+bnz label16
+err
+label16:
+intc_0 // 0
+bytec 7 // "balance"
+intc_0 // 0
+bytec 7 // "balance"
+app_local_get
+txna ApplicationArgs 1
+btoi
+-
+app_local_put
+intc 4 // 1
+bytec 7 // "balance"
+intc 4 // 1
+bytec 7 // "balance"
+app_local_get
+txna ApplicationArgs 1
+btoi
++
+app_local_put
+intc 4 // 1
+return
+label10:

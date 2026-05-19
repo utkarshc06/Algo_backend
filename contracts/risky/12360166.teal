@@ -1,0 +1,113 @@
+#pragma version 2
+intcblock 0 1
+bytecblock 0x77726974655f646964 0x6d6f646966795f646964 0x7365745f636f6e74726f6c6c65725f646964 0x64656c6574655f646964 0x43726561746f72 0x636f6e74726f6c6c65722d444944
+txn ApplicationID
+intc_0 // 0
+==
+bnz label1
+txna ApplicationArgs 0
+bytec_0 // "write_did"
+==
+bnz label2
+txna ApplicationArgs 0
+bytec_1 // "modify_did"
+==
+bnz label3
+txna ApplicationArgs 0
+bytec_2 // "set_controller_did"
+==
+bnz label4
+txna ApplicationArgs 0
+bytec_3 // "delete_did"
+==
+bnz label5
+err
+label1:
+bytec 4 // "Creator"
+txn Sender
+app_global_put
+txn NumAppArgs
+intc_0 // 0
+==
+bnz label6
+err
+label6:
+intc_1 // 1
+return
+b label7
+label2:
+intc_0 // 0
+txna ApplicationArgs 1
+app_global_get_ex
+store 0
+store 1
+load 0
+bnz label8
+txna ApplicationArgs 1
+txna ApplicationArgs 2
+app_global_put
+b label9
+label8:
+intc_0 // 0
+return
+label9:
+intc_1 // 1
+return
+b label7
+label3:
+intc_0 // 0
+txna ApplicationArgs 1
+app_global_get_ex
+store 0
+store 1
+load 0
+bnz label10
+intc_0 // 0
+return
+b label11
+label10:
+txna ApplicationArgs 1
+txna ApplicationArgs 2
+app_global_put
+label11:
+intc_1 // 1
+return
+b label7
+label4:
+intc_0 // 0
+txna ApplicationArgs 1
+app_global_get_ex
+store 0
+store 1
+load 0
+bnz label12
+intc_0 // 0
+return
+b label13
+label12:
+intc_0 // 0
+bytec 5 // "controller-DID"
+txna ApplicationArgs 1
+app_local_put
+label13:
+intc_1 // 1
+return
+b label7
+label5:
+intc_0 // 0
+txna ApplicationArgs 1
+app_global_get_ex
+store 0
+store 1
+load 0
+bnz label14
+intc_0 // 0
+return
+b label15
+label14:
+txna ApplicationArgs 1
+app_global_del
+label15:
+intc_1 // 1
+return
+label7:

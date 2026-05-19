@@ -1,0 +1,140 @@
+#pragma version 2
+intcblock 0 1 5 4 2 3 6
+bytecblock 0x43726561746f72 0x6f70656e 0x636c6f7365 0x65786563757465
+intc_0 // 0
+txn ApplicationID
+==
+bz label1
+bytec_0 // "Creator"
+txn Sender
+app_global_put
+intc_1 // 1
+return
+label1:
+intc_2 // 5
+txn OnCompletion
+==
+bz label2
+bytec_0 // "Creator"
+app_global_get
+txn Sender
+==
+bz label3
+intc_1 // 1
+return
+label2:
+intc_3 // 4
+txn OnCompletion
+==
+bz label4
+bytec_0 // "Creator"
+app_global_get
+txn Sender
+==
+bz label3
+intc_1 // 1
+return
+label4:
+intc_1 // 1
+txn OnCompletion
+==
+bz label5
+intc_1 // 1
+return
+label5:
+intc 4 // 2
+txn OnCompletion
+==
+bz label6
+intc_1 // 1
+return
+label6:
+intc_0 // 0
+txn OnCompletion
+==
+bz label3
+txn NumAppArgs
+intc 4 // 2
+==
+bz label3
+txna ApplicationArgs 0
+bytec_1 // "open"
+==
+bnz label7
+txna ApplicationArgs 0
+bytec_2 // "close"
+==
+bnz label8
+txna ApplicationArgs 0
+bytec_3 // "execute"
+==
+bnz label9
+err
+label7:
+global GroupSize
+intc_1 // 1
+==
+bz label3
+intc_0 // 0
+txn ApplicationID
+txna ApplicationArgs 1
+app_local_get_ex
+bnz label10
+pop
+intc_0 // 0
+txna ApplicationArgs 1
+intc_1 // 1
+app_local_put
+intc_1 // 1
+return
+label9:
+global GroupSize
+intc 5 // 3
+==
+gtxn 0 TypeEnum
+intc 6 // 6
+==
+&&
+gtxn 1 TypeEnum
+intc_1 // 1
+==
+&&
+gtxn 2 TypeEnum
+intc_3 // 4
+==
+&&
+bz label3
+intc_0 // 0
+txn ApplicationID
+txna ApplicationArgs 1
+app_local_get_ex
+bz label10
+pop
+intc_0 // 0
+txna ApplicationArgs 1
+app_local_del
+intc_1 // 1
+return
+label8:
+global GroupSize
+intc_1 // 1
+==
+bz label3
+intc_0 // 0
+txn ApplicationID
+txna ApplicationArgs 1
+app_local_get_ex
+bz label10
+pop
+intc_0 // 0
+txna ApplicationArgs 1
+app_local_del
+intc_1 // 1
+return
+label3:
+intc_0 // 0
+return
+label10:
+pop
+intc_0 // 0
+return
