@@ -1,0 +1,176 @@
+#pragma version 2
+intcblock 0 4 1 5 2
+bytecblock 0x43726561746f72 0x526567426567696e 0x526567456e64 0x566f7465426567696e 0x566f7465456e64 0x7265676973746572 0x766f7465 0x766f746564 0x63616e64696461746561 0x63616e64696461746562
+intc_0 // 0
+txn ApplicationID
+==
+bz label1
+bytec_0 // "Creator"
+txn Sender
+app_global_put
+txn NumAppArgs
+intc_1 // 4
+==
+bz label2
+bytec_1 // "RegBegin"
+txna ApplicationArgs 0
+btoi
+app_global_put
+bytec_2 // "RegEnd"
+txna ApplicationArgs 1
+btoi
+app_global_put
+bytec_3 // "VoteBegin"
+txna ApplicationArgs 2
+btoi
+app_global_put
+bytec 4 // "VoteEnd"
+txna ApplicationArgs 3
+btoi
+app_global_put
+intc_2 // 1
+return
+label1:
+intc_3 // 5
+txn OnCompletion
+==
+bz label3
+bytec_0 // "Creator"
+app_global_get
+txn Sender
+==
+bz label2
+intc_2 // 1
+return
+label3:
+intc_1 // 4
+txn OnCompletion
+==
+bz label4
+bytec_0 // "Creator"
+app_global_get
+txn Sender
+==
+bz label2
+intc_2 // 1
+return
+label4:
+intc 4 // 2
+txn OnCompletion
+==
+bnz label5
+txna ApplicationArgs 0
+bytec 5 // "register"
+==
+bnz label6
+txna ApplicationArgs 0
+bytec 6 // "vote"
+==
+bnz label7
+intc_0 // 0
+return
+label7:
+global Round
+bytec_3 // "VoteBegin"
+app_global_get
+>=
+global Round
+bytec 4 // "VoteEnd"
+app_global_get
+<=
+&&
+bz label2
+intc_0 // 0
+txn ApplicationID
+app_opted_in
+bz label2
+intc_0 // 0
+intc 4 // 2
+asset_holding_get AssetBalance
+pop
+intc_2 // 1
+>=
+bz label2
+global GroupSize
+intc 4 // 2
+==
+bz label2
+gtxn 1 TypeEnum
+intc_1 // 4
+==
+bz label2
+bytec_0 // "Creator"
+app_global_get
+gtxn 1 AssetReceiver
+==
+bz label2
+gtxn 1 XferAsset
+intc 4 // 2
+==
+bz label2
+gtxn 1 AssetAmount
+intc_2 // 1
+==
+bz label2
+intc_0 // 0
+txn ApplicationID
+bytec 7 // "voted"
+app_local_get_ex
+bnz label8
+pop
+txna ApplicationArgs 1
+bytec 8 // "candidatea"
+==
+txna ApplicationArgs 1
+bytec 9 // "candidateb"
+==
+||
+bz label2
+intc_0 // 0
+txna ApplicationArgs 1
+app_global_get_ex
+bnz label9
+pop
+intc_0 // 0
+label9:
+intc_2 // 1
++
+store 1
+txna ApplicationArgs 1
+load 1
+app_global_put
+intc_0 // 0
+bytec 7 // "voted"
+txna ApplicationArgs 1
+app_local_put
+intc_2 // 1
+return
+label8:
+pop
+intc_2 // 1
+return
+label6:
+global Round
+bytec_1 // "RegBegin"
+app_global_get
+>=
+global Round
+bytec_2 // "RegEnd"
+app_global_get
+<=
+&&
+intc_2 // 1
+txn OnCompletion
+==
+&&
+bz label2
+intc_2 // 1
+return
+label5:
+intc_2 // 1
+return
+label2:
+intc_0 // 0
+return
+intc_2 // 1
+return

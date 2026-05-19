@@ -1,0 +1,261 @@
+#pragma version 2
+intcblock 0 5 1 2 4
+bytecblock 0x43726561746f72 0x537461727444617465 0x456e6444617465 0x476f616c 0x5265636569766572 0x546f74616c 0x46756e64436c6f736544617465 0x457363726f77 0x646f6e617465 0x7265636c61696d 0x636c61696d 0x4d79416d6f756e74476976656e
+intc_0 // 0
+txn ApplicationID
+==
+bz label1
+bytec_0 // "Creator"
+txn Sender
+app_global_put
+txn NumAppArgs
+intc_1 // 5
+==
+bz label2
+bytec_1 // "StartDate"
+txna ApplicationArgs 0
+btoi
+app_global_put
+bytec_2 // "EndDate"
+txna ApplicationArgs 1
+btoi
+app_global_put
+bytec_3 // "Goal"
+txna ApplicationArgs 2
+btoi
+app_global_put
+bytec 4 // "Receiver"
+txna ApplicationArgs 3
+app_global_put
+bytec 5 // "Total"
+intc_0 // 0
+app_global_put
+bytec 6 // "FundCloseDate"
+txna ApplicationArgs 4
+btoi
+app_global_put
+intc_2 // 1
+return
+label1:
+intc_1 // 5
+txn OnCompletion
+==
+bz label3
+bytec_0 // "Creator"
+app_global_get
+txn Sender
+==
+global LatestTimestamp
+bytec 6 // "FundCloseDate"
+app_global_get
+>=
+&&
+bz label2
+intc_0 // 0
+intc_2 // 1
+balance
+==
+bnz label4
+global GroupSize
+intc_3 // 2
+==
+gtxn 1 TypeEnum
+intc_2 // 1
+==
+&&
+bytec 4 // "Receiver"
+app_global_get
+gtxn 1 CloseRemainderTo
+==
+&&
+gtxn 1 Amount
+intc_0 // 0
+==
+&&
+bytec 7 // "Escrow"
+app_global_get
+gtxn 1 Sender
+==
+&&
+bz label2
+intc_2 // 1
+return
+label3:
+intc 4 // 4
+txn OnCompletion
+==
+bz label5
+bytec_0 // "Creator"
+app_global_get
+txn Sender
+==
+txn NumAppArgs
+intc_2 // 1
+==
+&&
+bz label2
+bytec 7 // "Escrow"
+txna ApplicationArgs 0
+app_global_put
+intc_2 // 1
+return
+label5:
+intc_3 // 2
+txn OnCompletion
+==
+bnz label6
+intc_0 // 0
+txn NumAppArgs
+==
+bz label7
+intc_2 // 1
+txn OnCompletion
+==
+bz label2
+intc_2 // 1
+return
+label7:
+txna ApplicationArgs 0
+bytec 8 // "donate"
+==
+bnz label8
+txna ApplicationArgs 0
+bytec 9 // "reclaim"
+==
+bnz label9
+txna ApplicationArgs 0
+bytec 10 // "claim"
+==
+bnz label10
+b label2
+label8:
+bytec 7 // "Escrow"
+app_global_get
+gtxn 1 Receiver
+==
+bz label2
+bytec 5 // "Total"
+app_global_get
+gtxn 1 Amount
++
+store 1
+bytec 5 // "Total"
+load 1
+app_global_put
+intc_0 // 0
+txn ApplicationID
+bytec 11 // "MyAmountGiven"
+app_local_get_ex
+bz label11
+gtxn 1 Amount
++
+store 3
+intc_0 // 0
+bytec 11 // "MyAmountGiven"
+load 3
+app_local_put
+b label4
+label11:
+intc_0 // 0
+bytec 11 // "MyAmountGiven"
+gtxn 1 Amount
+app_local_put
+b label4
+label10:
+global GroupSize
+intc_3 // 2
+==
+bz label2
+gtxn 1 Receiver
+bytec 4 // "Receiver"
+app_global_get
+==
+gtxn 1 Sender
+bytec 7 // "Escrow"
+app_global_get
+==
+&&
+gtxn 1 CloseRemainderTo
+bytec 4 // "Receiver"
+app_global_get
+==
+&&
+global LatestTimestamp
+bytec_2 // "EndDate"
+app_global_get
+>
+&&
+bz label2
+bytec 5 // "Total"
+app_global_get
+bytec_3 // "Goal"
+app_global_get
+>=
+bz label2
+b label4
+label9:
+global GroupSize
+intc_3 // 2
+==
+bz label2
+gtxn 1 Receiver
+gtxn 0 Sender
+==
+gtxn 1 Sender
+bytec 7 // "Escrow"
+app_global_get
+==
+&&
+global LatestTimestamp
+bytec_2 // "EndDate"
+app_global_get
+>
+&&
+bytec 5 // "Total"
+app_global_get
+bytec_3 // "Goal"
+app_global_get
+<
+&&
+gtxn 1 Amount
+gtxn 1 Fee
++
+intc_0 // 0
+bytec 11 // "MyAmountGiven"
+app_local_get
+<=
+&&
+bz label2
+gtxn 1 Fee
+gtxn 1 Amount
++
+intc_2 // 1
+balance
+==
+gtxn 1 CloseRemainderTo
+global ZeroAddress
+==
+||
+bz label2
+intc_0 // 0
+bytec 11 // "MyAmountGiven"
+app_local_get
+gtxn 1 Amount
+-
+gtxn 1 Fee
+-
+store 5
+intc_0 // 0
+bytec 11 // "MyAmountGiven"
+load 5
+app_local_put
+b label4
+label6:
+intc_2 // 1
+return
+label2:
+intc_0 // 0
+return
+label4:
+intc_2 // 1
+return

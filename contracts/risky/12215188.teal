@@ -1,0 +1,65 @@
+#pragma version 2
+intcblock 0 1 2 4 5
+bytecblock 0x4d33b16775f259660b38eca9d66c208ac945120a43e95516f0227b0f73984750 0x636f756e746572
+txn OnCompletion
+intc_0 // 0
+==
+bnz label1
+txn OnCompletion
+intc_1 // 1
+==
+bnz label2
+txn OnCompletion
+intc_2 // 2
+==
+bnz label3
+txn OnCompletion
+intc_3 // 4
+==
+bnz label4
+txn OnCompletion
+intc 4 // 5
+==
+bnz label5
+err
+label1:
+bytec_0 // addr JUZ3CZ3V6JMWMCZY5SU5M3BARLEUKEQKIPUVKFXQEJ5Q644YI5ILP36EXE
+txn Sender
+==
+bnz label2
+bytec_1 // "counter"
+dup
+app_global_get
+intc_1 // 1
++
+dup
+store 0
+app_global_put
+intc_0 // 0
+bytec_1 // "counter"
+app_local_get
+intc_1 // 1
++
+store 1
+intc_0 // 0
+bytec_1 // "counter"
+load 1
+app_local_put
+load 0
+return
+label2:
+intc_1 // 1
+return
+label3:
+intc_1 // 1
+return
+label5:
+bytec_0 // addr JUZ3CZ3V6JMWMCZY5SU5M3BARLEUKEQKIPUVKFXQEJ5Q644YI5ILP36EXE
+txn Sender
+==
+return
+label4:
+bytec_0 // addr JUZ3CZ3V6JMWMCZY5SU5M3BARLEUKEQKIPUVKFXQEJ5Q644YI5ILP36EXE
+txn Sender
+==
+return

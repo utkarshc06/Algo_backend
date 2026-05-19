@@ -1,0 +1,20 @@
+#pragma version 2
+intcblock 6 1 0
+bytecblock 0x636f756e746572
+txn TypeEnum
+intc_0 // 6
+==
+bz label1
+bytec_0 // "counter"
+dup
+app_global_get
+intc_1 // 1
++
+dup
+store 0
+app_global_put
+load 0
+return
+label1:
+intc_2 // 0
+return

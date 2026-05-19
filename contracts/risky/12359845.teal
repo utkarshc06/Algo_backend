@@ -1,0 +1,123 @@
+#pragma version 2
+intcblock 0 5 4 2 1 10000
+bytecblock 0x626964 0x43726561746f72 0x526f756e64426567696e 0x526f756e64456e64 0x506f74 0x426964
+txn ApplicationID
+intc_0 // 0
+==
+bnz label1
+txn OnCompletion
+intc_1 // 5
+==
+bnz label2
+txn OnCompletion
+intc_2 // 4
+==
+bnz label3
+txn OnCompletion
+intc_3 // 2
+==
+bnz label4
+txn OnCompletion
+intc 4 // 1
+==
+bnz label5
+bytec_0 // "bid"
+txna ApplicationArgs 0
+==
+bnz label6
+err
+label1:
+bytec_1 // "Creator"
+txn Sender
+app_global_put
+bytec_2 // "RoundBegin"
+global LatestTimestamp
+app_global_put
+bytec_3 // "RoundEnd"
+global LatestTimestamp
+intc 5 // 10000
++
+app_global_put
+bytec 4 // "Pot"
+intc_0 // 0
+app_global_put
+txn NumAppArgs
+intc_3 // 2
+==
+bnz label7
+err
+label7:
+intc 4 // 1
+return
+b label8
+label2:
+txn Sender
+bytec_1 // "Creator"
+app_global_get
+==
+return
+b label8
+label3:
+txn Sender
+bytec_1 // "Creator"
+app_global_get
+==
+return
+b label8
+label4:
+intc 4 // 1
+return
+b label8
+label5:
+global LatestTimestamp
+bytec_2 // "RoundBegin"
+app_global_get
+>=
+global LatestTimestamp
+bytec_3 // "RoundEnd"
+app_global_get
+<=
+&&
+return
+b label8
+label6:
+global LatestTimestamp
+bytec_2 // "RoundBegin"
+app_global_get
+>=
+global LatestTimestamp
+bytec_3 // "RoundEnd"
+app_global_get
+<=
+&&
+return
+bytec 4 // "Pot"
+bytec 4 // "Pot"
+app_global_get
+txn Amount
++
+app_global_put
+intc_0 // 0
+txn ApplicationID
+bytec 5 // "Bid"
+app_local_get_ex
+store 0
+store 1
+load 0
+bnz label9
+intc_0 // 0
+bytec 5 // "Bid"
+txn Amount
+app_local_put
+b label10
+label9:
+intc_0 // 0
+bytec 5 // "Bid"
+load 1
+txn Amount
++
+app_local_put
+label10:
+intc 4 // 1
+return
+label8:

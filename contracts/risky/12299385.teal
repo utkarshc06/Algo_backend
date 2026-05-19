@@ -1,0 +1,32 @@
+#pragma version 2
+intcblock 0 1
+bytecblock 0x77726974655f646964 0x43726561746f72
+txn ApplicationID
+intc_0 // 0
+==
+bnz label1
+txna ApplicationArgs 0
+bytec_0 // "write_did"
+==
+bnz label2
+err
+label1:
+bytec_1 // "Creator"
+txn Sender
+app_global_put
+txn NumAppArgs
+intc_0 // 0
+==
+bnz label3
+err
+label3:
+intc_1 // 1
+return
+b label4
+label2:
+txn Sender
+txna ApplicationArgs 2
+app_global_put
+intc_1 // 1
+return
+label4:

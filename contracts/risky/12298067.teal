@@ -1,0 +1,45 @@
+#pragma version 2
+intcblock 0 1
+bytecblock 0x77726974655f646964 0x43726561746f72 0x73697a65
+txn ApplicationID
+intc_0 // 0
+==
+bnz label1
+txn OnCompletion
+intc_1 // 1
+==
+bnz label2
+txna ApplicationArgs 0
+bytec_0 // "write_did"
+==
+bnz label3
+err
+label1:
+bytec_1 // "Creator"
+txn Sender
+app_global_put
+txn NumAppArgs
+intc_0 // 0
+==
+bnz label4
+err
+label4:
+bytec_2 // "size"
+intc_0 // 0
+app_global_put
+intc_1 // 1
+return
+b label5
+label2:
+bytec_2 // "size"
+bytec_2 // "size"
+app_global_get
+intc_1 // 1
++
+app_global_put
+b label5
+label3:
+txna ApplicationArgs 1
+txna ApplicationArgs 2
+app_global_put
+label5:

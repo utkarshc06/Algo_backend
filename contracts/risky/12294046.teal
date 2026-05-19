@@ -1,0 +1,144 @@
+#pragma version 2
+intcblock 0 5 4 2 1
+bytecblock 0x766f7465 0x43726561746f72 0x526567426567696e 0x526567456e64 0x566f7465426567696e 0x566f7465456e64 0x766f746564
+txn ApplicationID
+intc_0 // 0
+==
+bnz label1
+txn OnCompletion
+intc_1 // 5
+==
+bnz label2
+txn OnCompletion
+intc_2 // 4
+==
+bnz label3
+txn OnCompletion
+intc_3 // 2
+==
+bnz label4
+txn OnCompletion
+intc 4 // 1
+==
+bnz label5
+txna ApplicationArgs 0
+bytec_0 // "vote"
+==
+bnz label6
+err
+label1:
+bytec_1 // "Creator"
+txn Sender
+app_global_put
+txn NumAppArgs
+intc_2 // 4
+==
+bnz label7
+err
+label7:
+bytec_2 // "RegBegin"
+txna ApplicationArgs 0
+btoi
+app_global_put
+bytec_3 // "RegEnd"
+txna ApplicationArgs 1
+btoi
+app_global_put
+bytec 4 // "VoteBegin"
+txna ApplicationArgs 2
+btoi
+app_global_put
+bytec 5 // "VoteEnd"
+txna ApplicationArgs 3
+btoi
+app_global_put
+intc 4 // 1
+return
+b label8
+label2:
+txn Sender
+bytec_1 // "Creator"
+app_global_get
+==
+return
+b label8
+label3:
+txn Sender
+bytec_1 // "Creator"
+app_global_get
+==
+return
+b label8
+label4:
+intc_0 // 0
+global CurrentApplicationID
+bytec 6 // "voted"
+app_local_get_ex
+store 0
+store 1
+global Round
+bytec 5 // "VoteEnd"
+app_global_get
+<=
+load 0
+&&
+bz label9
+load 1
+load 1
+app_global_get
+intc 4 // 1
+-
+app_global_put
+label9:
+intc 4 // 1
+return
+b label8
+label5:
+global Round
+bytec_2 // "RegBegin"
+app_global_get
+>=
+global Round
+bytec_3 // "RegEnd"
+app_global_get
+<=
+&&
+return
+b label8
+label6:
+global Round
+bytec 4 // "VoteBegin"
+app_global_get
+>=
+global Round
+bytec 5 // "VoteEnd"
+app_global_get
+<=
+&&
+bnz label10
+err
+label10:
+intc_0 // 0
+global CurrentApplicationID
+bytec 6 // "voted"
+app_local_get_ex
+store 0
+store 1
+load 0
+bz label11
+intc_0 // 0
+return
+label11:
+txna ApplicationArgs 1
+txna ApplicationArgs 1
+app_global_get
+intc 4 // 1
++
+app_global_put
+intc_0 // 0
+bytec 6 // "voted"
+txna ApplicationArgs 1
+app_local_put
+intc 4 // 1
+return
+label8:
